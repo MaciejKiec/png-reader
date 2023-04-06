@@ -7,7 +7,6 @@
 #include "headers.cpp"
 
 //to do
-//napisać ogólnego chunk readera 
 //napisać klasy, struktury reprezentujące zadane chunki
 //sprawdzić poprawność wczytywanych chunków za pomocą nayuki.io
 //wykorzystać wzorzec fabryka
@@ -50,39 +49,90 @@ bool checkIfFileIsPNG(const std::vector<unsigned int> bytes){
 }
 
 class Chunk{
-    private:
-        uint32_t dataLength;
-        uint32_t type;
-        std::vector<unsigned int> data;
-        uint32_t crc32;
-    public:
+ public:
+    uint32_t dataLength;
+    uint32_t type;
+    std::vector<unsigned int> data;
+    uint32_t crc32;
+
     Chunk(uint32_t _dataLength, uint32_t _type, std::vector<unsigned int> _data, uint32_t _crc32):
     dataLength(_dataLength), type(_type), data(_data), crc32(_crc32) {};
 
-    uint32_t getDataLength(){
-        return dataLength;
+    virtual void whatChunkAmI(){
+        std::cout << "Im not implemented chunk, but my type is: " << std::hex <<type << "\n";
     }
 };
 
-class IHDR: public Chunk{
+class IHDRChunk: public Chunk{
+
+public:
+    IHDRChunk(uint32_t _dataLength, uint32_t _type, std::vector<unsigned int> _data, uint32_t _crc32):
+        Chunk(_dataLength, _type, _data, _crc32) {};
+
+    void whatChunkAmI() override{
+        std::cout << "I'm IHDR chunk!\n";
+    }
 
 };
 
-class IDAT: public Chunk{
+class IDATChunk: public Chunk{
+public:
+    IDATChunk(uint32_t _dataLength, uint32_t _type, std::vector<unsigned int> _data, uint32_t _crc32):
+        Chunk(_dataLength, _type, _data, _crc32) {};
+
+    void whatChunkAmI() override{
+        std::cout << "I'm IDAT chunk!\n";
+    }
 
 };
 
-class IEND: public Chunk{
+class IENDChunk: public Chunk{
+public:
+    IENDChunk(uint32_t _dataLength, uint32_t _type, std::vector<unsigned int> _data, uint32_t _crc32):
+        Chunk(_dataLength, _type, _data, _crc32) {};
 
+    void whatChunkAmI() override{
+        std::cout << "I'm IEND chunk!\n";
+    }
 };
 
 class ChunkFactory{
+private:
+    IHDRChunk* generateIHDRChunk(uint32_t dataLength, uint32_t type, std::vector<unsigned int> data, uint32_t crc32){
+       return new IHDRChunk(dataLength, type, data, crc32);
+    }
+
+    IDATChunk* generateIDATChunk(uint32_t dataLength, uint32_t type, std::vector<unsigned int> data, uint32_t crc32){
+       return new IDATChunk(dataLength, type, data, crc32);
+    }
+
+    IENDChunk* generateIENDChunk(uint32_t dataLength, uint32_t type, std::vector<unsigned int> data, uint32_t crc32){
+       return new IENDChunk(dataLength, type, data, crc32);
+    }
+public:
+    Chunk* generateChunk(uint32_t dataLength, uint32_t type, std::vector<unsigned int> data, uint32_t crc32){
+        switch(type){
+            case IHDRHeader:
+                return generateIHDRChunk(dataLength, type, data, crc32);
+            break;
+            case IDATHeader:
+                return generateIDATChunk(dataLength, type, data, crc32);
+            break;
+            case IENDHeader:
+                return generateIENDChunk(dataLength, type, data, crc32);
+            break;
+            default:
+                return new Chunk(dataLength, type, data, crc32);
+        }
+    }
+
 };
 
 class ChunkReader{
     public:
-    const std::vector<Chunk> readSomeChunks(const std::vector<unsigned int> bytesToRead){
-        std::vector<Chunk> chunksToReturn;
+    const std::vector<Chunk*> readSomeChunks(const std::vector<unsigned int> bytesToRead){
+        std::vector<Chunk*> chunksToReturn;
+        ChunkFactory* chunkFactory = new ChunkFactory();
         bool zeroLengthDetected = false;
         
         if(!checkIfFileIsPNG(bytesToRead)){
@@ -110,7 +160,8 @@ class ChunkReader{
             uint32_t crc32 = (bytesToRead[pointer] << 24) | (bytesToRead[pointer+1] << 16) | (bytesToRead[pointer+2] << 8) | bytesToRead[pointer+3];
             pointer += 4;
 
-            chunksToReturn.push_back(Chunk(dataLength, type, data, crc32));
+
+            chunksToReturn.push_back(chunkFactory->generateChunk(dataLength, type, data, crc32));
 
         }
 
@@ -121,10 +172,22 @@ class ChunkReader{
 
 int main(){
     std::vector<unsigned int> bytes = loadBytesFromFile("2.png");
-    ChunkReader *chunkReader = new ChunkReader();
-    std::vector<Chunk> chunks = chunkReader->readSomeChunks(bytes);
+    ChunkReader* chunkReader = new ChunkReader();
+    std::vector<Chunk*> chunks = chunkReader->readSomeChunks(bytes);
     for(int i = 0; i < chunks.size(); i++){
-        std::cout << chunks[i].getDataLength() << "\n";
+        chunks[i]->whatChunkAmI();
     }
 return 0;
 }
+
+
+
+
+/*
+std::vector<unsigned int> bytes = loadBytesFromFile("2.png");
+ChunkReader *chunkReader = new ChunkReader();
+std::vector<Chunk> chunks = chunkReader->readSomeChunks(bytes);
+for(int i = 0; i < chunks.size(); i++){
+    std::cout << chunks[i].dataLength << "\n";
+}
+*/
