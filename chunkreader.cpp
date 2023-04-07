@@ -59,72 +59,125 @@ class Chunk{
     dataLength(_dataLength), type(_type), data(_data), crc32(_crc32) {};
 
     virtual void whatChunkAmI(){
-        std::cout << "Im not implemented chunk, but my type is: " << std::hex <<type << "\n";
+        std::ios_base::fmtflags f(std::cout.flags()); // zapisujemy flagi strumienia, żeby tylko te informacje były wyświetlane w formie hex
+        std::cout << "Im not implemented chunk, but my type is: " << std::hex <<type << "\n\n";
+        std::cout.flags(f); // przywracamy oryginale flagi sturmienia
     }
 };
 
 class IHDRChunk: public Chunk{
+    private:
+        uint32_t width;
+        uint32_t height;
+        unsigned int bitDepth;
+        unsigned int colorType;
+        unsigned int compressionMethod;
+        unsigned int filterMethod;
+        unsigned int interlaceMethod;
 
-public:
-    IHDRChunk(uint32_t _dataLength, uint32_t _type, std::vector<unsigned int> _data, uint32_t _crc32):
-        Chunk(_dataLength, _type, _data, _crc32) {};
+        void readChunkSpecifics(std::vector<unsigned int> data){
+            width = (data[0] << 24 | data[1] << 16 | data[2] << 8 | data[3]);
+            height = (data[4] << 24 | data[5] << 16 | data[6] << 8 | data[7]);
+            bitDepth = data[8];
+            colorType = data[9];
+            compressionMethod = data[10];
+            filterMethod = data[11];
+            interlaceMethod = data[12];
+        }
+    public:
+        IHDRChunk(uint32_t _dataLength, uint32_t _type, std::vector<unsigned int> _data, uint32_t _crc32): Chunk(_dataLength, _type, _data, _crc32){
+            readChunkSpecifics(_data);
+        };
 
-    void whatChunkAmI() override{
-        std::cout << "I'm IHDR chunk!\n";
-    }
+        void whatChunkAmI() override{
+            std::cout << "I'm HDR chunk! My specifics:\n";
+            std::cout << "Width: " << width << " pixels\n";
+            std::cout << "Height: " << height << " pixels\n";
+            std::cout << "Bit depth: " << bitDepth << " bits per pixel\n";
+            std::cout << "Color type: " << colorType << "\n";
+            std::cout << "Filter method: " << filterMethod<< "\n";
+            std::cout << "Interlace method: " << interlaceMethod << "\n\n";
+        }
+};
 
+class PLTEChunk: public Chunk{
+    private:
+        int entriesNumber = 0;
+
+        void readChunkSpecifics(std::vector<unsigned int> data){
+            entriesNumber = data.size() / 3;
+        }
+
+    public:
+        PLTEChunk(uint32_t _dataLength, uint32_t _type, std::vector<unsigned int> _data, uint32_t _crc32): Chunk(_dataLength, _type, _data, _crc32){
+            if(_data.size() % 3 != 0){
+                std::cout << "PLTE chunk error! Data length is not divisible by 3!\n";
+            }
+            readChunkSpecifics(_data);
+        };
+
+        void whatChunkAmI() override{
+            std::cout << "I'm PLTE chunk!\n";
+            std::cout << "Number of entries: " << entriesNumber << "\n\n";
+        }
 };
 
 class IDATChunk: public Chunk{
-public:
-    IDATChunk(uint32_t _dataLength, uint32_t _type, std::vector<unsigned int> _data, uint32_t _crc32):
-        Chunk(_dataLength, _type, _data, _crc32) {};
+    public:
+        IDATChunk(uint32_t _dataLength, uint32_t _type, std::vector<unsigned int> _data, uint32_t _crc32):
+            Chunk(_dataLength, _type, _data, _crc32) {};
 
-    void whatChunkAmI() override{
-        std::cout << "I'm IDAT chunk!\n";
-    }
-
+        void whatChunkAmI() override{
+            std::cout << "I'm IDAT chunk!\n";
+            std::cout << "Data length: " << dataLength << " bytes\n\n";
+        }
 };
 
 class IENDChunk: public Chunk{
-public:
-    IENDChunk(uint32_t _dataLength, uint32_t _type, std::vector<unsigned int> _data, uint32_t _crc32):
-        Chunk(_dataLength, _type, _data, _crc32) {};
+    public:
+        IENDChunk(uint32_t _dataLength, uint32_t _type, std::vector<unsigned int> _data, uint32_t _crc32):
+            Chunk(_dataLength, _type, _data, _crc32) {};
 
-    void whatChunkAmI() override{
-        std::cout << "I'm IEND chunk!\n";
-    }
+        void whatChunkAmI() override{
+            std::cout << "I'm IEND chunk!\n\n";
+        }
 };
 
 class ChunkFactory{
-private:
-    IHDRChunk* generateIHDRChunk(uint32_t dataLength, uint32_t type, std::vector<unsigned int> data, uint32_t crc32){
-       return new IHDRChunk(dataLength, type, data, crc32);
-    }
-
-    IDATChunk* generateIDATChunk(uint32_t dataLength, uint32_t type, std::vector<unsigned int> data, uint32_t crc32){
-       return new IDATChunk(dataLength, type, data, crc32);
-    }
-
-    IENDChunk* generateIENDChunk(uint32_t dataLength, uint32_t type, std::vector<unsigned int> data, uint32_t crc32){
-       return new IENDChunk(dataLength, type, data, crc32);
-    }
-public:
-    Chunk* generateChunk(uint32_t dataLength, uint32_t type, std::vector<unsigned int> data, uint32_t crc32){
-        switch(type){
-            case IHDRHeader:
-                return generateIHDRChunk(dataLength, type, data, crc32);
-            break;
-            case IDATHeader:
-                return generateIDATChunk(dataLength, type, data, crc32);
-            break;
-            case IENDHeader:
-                return generateIENDChunk(dataLength, type, data, crc32);
-            break;
-            default:
-                return new Chunk(dataLength, type, data, crc32);
+    private:
+        IHDRChunk* generateIHDRChunk(uint32_t dataLength, uint32_t type, std::vector<unsigned int> data, uint32_t crc32){
+            return new IHDRChunk(dataLength, type, data, crc32);
         }
-    }
+        PLTEChunk* generatePLTEChunk(uint32_t dataLength, uint32_t type, std::vector<unsigned int> data, uint32_t crc32){
+            return new PLTEChunk(dataLength, type, data, crc32);
+        }
+
+        IDATChunk* generateIDATChunk(uint32_t dataLength, uint32_t type, std::vector<unsigned int> data, uint32_t crc32){
+            return new IDATChunk(dataLength, type, data, crc32);
+        }
+
+        IENDChunk* generateIENDChunk(uint32_t dataLength, uint32_t type, std::vector<unsigned int> data, uint32_t crc32){
+            return new IENDChunk(dataLength, type, data, crc32);
+        }
+    public:
+        Chunk* generateChunk(uint32_t dataLength, uint32_t type, std::vector<unsigned int> data, uint32_t crc32){
+            switch(type){
+                case IHDRHeader:
+                    return generateIHDRChunk(dataLength, type, data, crc32);
+                break;
+                case PLTEHeader:
+                    return generatePLTEChunk(dataLength, type, data, crc32);
+                break;
+                case IDATHeader:
+                    return generateIDATChunk(dataLength, type, data, crc32);
+                break;
+                case IENDHeader:
+                    return generateIENDChunk(dataLength, type, data, crc32);
+                break;
+                default:
+                    return new Chunk(dataLength, type, data, crc32);
+            }
+        }
 
 };
 
@@ -152,7 +205,7 @@ class ChunkReader{
             pointer += 4;
 
             std::vector<unsigned int> data = {};
-            for(int i = pointer; i < dataLength; i++){
+            for(int i = pointer; i < (pointer+dataLength) ; i++){
                 data.push_back(bytesToRead[i]);
             }
             pointer += dataLength;
@@ -175,9 +228,9 @@ int main(){
     ChunkReader* chunkReader = new ChunkReader();
     std::vector<Chunk*> chunks = chunkReader->readSomeChunks(bytes);
     for(int i = 0; i < chunks.size(); i++){
-        chunks[i]->whatChunkAmI();
+       chunks[i]->whatChunkAmI();
     }
-return 0;
+    return 0;
 }
 
 
