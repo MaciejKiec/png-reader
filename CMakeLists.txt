@@ -1,0 +1,13 @@
+cmake_minimum_required(VERSION 3.0)
+PROJECT(PngReader)
+include_directories(inc)
+file(GLOB SOURCE "src/*.cpp" "src/Chunks/*.cpp" "src/Chunks/AncillaryChunks/*.cpp" "src/Chunks/CriticalChunks/*.cpp"
+"inc/*.hh" "inc/Chunks/*.hh" "inc/Chunks/AncillaryChunks/*.hh" "inc/Chunks/CriticalChunks/*.hh")
+add_executable(${PROJECT_NAME} ${SOURCE})
+set(THREADS_PREFER_PTHREAD_FLAG ON)
+find_package(Threads REQUIRED)
+target_link_libraries(PngReader Threads::Threads)
+target_link_libraries(PngReader pthread)
+target_compile_features(PngReader PRIVATE cxx_std_17)
+set(CMAKE_BUILD_TYPE Debug)
+add_compile_options(-Wall -Wextra -pedantic -Werror -std=gnu++17)
