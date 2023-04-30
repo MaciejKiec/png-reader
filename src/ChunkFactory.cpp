@@ -20,6 +20,10 @@ tEXtChunk* ChunkFactory::generatetEXtChunk(uint32_t dataLength, uint32_t type, s
     return new tEXtChunk(dataLength, type, data, crc32);
 }
 
+sBITChunk* ChunkFactory::generatesBITChunk(uint32_t dataLength, uint32_t type, std::vector<unsigned int> data, uint32_t crc32){
+    return new sBITChunk(dataLength, type, data, crc32);
+}
+
 Chunk* ChunkFactory::generateChunk(uint32_t dataLength, uint32_t type, std::vector<unsigned int> data, uint32_t crc32){
     switch(type){
         case IHDRHeader:
@@ -37,7 +41,9 @@ Chunk* ChunkFactory::generateChunk(uint32_t dataLength, uint32_t type, std::vect
         case tEXtHeader:
             return generatetEXtChunk(dataLength, type, data, crc32);
         break;
-        
+        case sBITHeader:
+            return generatesBITChunk(dataLength, type, data, crc32);
+        break;
         default:
             return new Chunk(dataLength, type, data, crc32);
     }

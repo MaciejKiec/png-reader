@@ -8,5 +8,6 @@ const uint32_t IDATHeader = 0x49444154;
 const uint32_t IENDHeader = 0x49454e44;
 const uint32_t PLTEHeader = 0x504C5445;
 const uint32_t tEXtHeader = 0x74455874;
+const uint32_t sBITHeader = 0x73424954;
 
 #endif
