@@ -13,6 +13,7 @@
 #include "Chunks/CriticalChunks/PLTEChunk.hh"
 #include "Chunks/AncillaryChunks/tEXtChunk.hh"
 #include "Chunks/AncillaryChunks/sBITChunk.hh"
+#include "Chunks/AncillaryChunks/pHYsChunk.hh"
 
 class ChunkFactory{
     private:
@@ -22,6 +23,7 @@ class ChunkFactory{
         IENDChunk* generateIENDChunk(uint32_t dataLength, uint32_t type, std::vector<unsigned int> data, uint32_t crc32);
         tEXtChunk* generatetEXtChunk(uint32_t dataLength, uint32_t type, std::vector<unsigned int> data, uint32_t crc32);
         sBITChunk* generatesBITChunk(uint32_t dataLength, uint32_t type, std::vector<unsigned int> data, uint32_t crc32);
+        pHYsChunk* generatepHYsChunk(uint32_t dataLength, uint32_t type, std::vector<unsigned int> data, uint32_t crc32);
     public:
         Chunk* generateChunk(uint32_t dataLength, uint32_t type, std::vector<unsigned int> data, uint32_t crc32);
 };
