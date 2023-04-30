@@ -5,7 +5,7 @@
 
 int main(){
 
-    std::vector<unsigned int> bytes = loadBytesFromFile("2.png");
+    std::vector<unsigned int> bytes = loadBytesFromFile("images\\3.png");
     ChunkReader* chunkReader = new ChunkReader();
     std::vector<Chunk*> chunks = chunkReader->readSomeChunks(bytes);
     for(int i = 0; i < chunks.size(); i++){

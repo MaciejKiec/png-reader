@@ -1,7 +1,13 @@
 #include "OnBytesOperations.hh"
 
 std::vector<unsigned int> loadBytesFromFile(const std::string filename){
-    std::ifstream input(filename, std::ios::binary);
+    std::ifstream input;
+    input.open(filename, std::ios::binary);
+    if(!input){
+        std::cerr << "Failed to load the file!\n";
+        exit(0);
+    }
+
     std::vector<char> bytesRead(
          (std::istreambuf_iterator<char>(input)),
          (std::istreambuf_iterator<char>()));

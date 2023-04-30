@@ -11,6 +11,7 @@
 #include "Chunks/CriticalChunks/IHDRChunk.hh"
 #include "Chunks/CriticalChunks/IENDChunk.hh"
 #include "Chunks/CriticalChunks/PLTEChunk.hh"
+#include "Chunks/AncillaryChunks/tEXtChunk.hh"
 
 class ChunkFactory{
     private:
@@ -18,6 +19,7 @@ class ChunkFactory{
         PLTEChunk* generatePLTEChunk(uint32_t dataLength, uint32_t type, std::vector<unsigned int> data, uint32_t crc32);
         IDATChunk* generateIDATChunk(uint32_t dataLength, uint32_t type, std::vector<unsigned int> data, uint32_t crc32);
         IENDChunk* generateIENDChunk(uint32_t dataLength, uint32_t type, std::vector<unsigned int> data, uint32_t crc32);
+        tEXtChunk* generatetEXtChunk(uint32_t dataLength, uint32_t type, std::vector<unsigned int> data, uint32_t crc32);
     public:
         Chunk* generateChunk(uint32_t dataLength, uint32_t type, std::vector<unsigned int> data, uint32_t crc32);
 };
