@@ -13,6 +13,7 @@ Chunk(_dataLength, _type, _data, _crc32) {
 };
 
 void sBITChunk::whatChunkAmI(){
+    std::cout << "I'm sBIT chunk! My specifics:\n";
     std::cout << "Red bits: " << redBits << "\n";
     std::cout << "Green bits: " << greenBits << "\n";
     std::cout << "Blue bits: " << blueBits << "\n";

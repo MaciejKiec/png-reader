@@ -5,7 +5,7 @@ void tEXtChunk::readChunkSpecifics(){
     int pointer = 0;
     while(this->data[pointer] != 0x00){
         singleSign = (char) this->data[pointer];
-        this->keyword += singleSign;
+        this->keyword.append(1,singleSign);;
         pointer++;
     }
 
@@ -13,7 +13,7 @@ void tEXtChunk::readChunkSpecifics(){
 
     while(pointer < this->data.size()){
         singleSign = (char) this->data[pointer];        
-        this->text += singleSign;
+        this->text.append(1,singleSign);
         pointer++;
     }
 }
@@ -25,6 +25,7 @@ Chunk(_dataLength, _type, _data, _crc32) {
 };
 
 void tEXtChunk::whatChunkAmI(){
+    std::cout << "I'm tEXT chunk! My specifics:\n";
     std::cout << "Keyword: " << keyword << std::endl;
     std::cout << "Text: " << text << std::endl;
     std::cout << std::endl;

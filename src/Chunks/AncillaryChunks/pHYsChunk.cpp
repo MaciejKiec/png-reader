@@ -12,6 +12,7 @@ Chunk(_dataLength, _type, _data, _crc32) {
 };
 
 void pHYsChunk::whatChunkAmI(){
+    std::cout << "I'm pHYs chunk! My specifics:\n";
     std::cout << "Horizontal resolution: " << horizontalResolution << " pixels\n";
     std::cout << "Vertical resolution: " << verticalResolution << " pixels\n";
     if(unitSpecifier){
