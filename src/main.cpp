@@ -9,5 +9,8 @@ int main(){
     for(int i = 0; i < chunks.size(); i++){
        chunks[i]->whatChunkAmI();
     }
+
+    ChunkWriter* chunkWriter = new ChunkWriter(chunks);
+    chunkWriter->writeCriticalChunksToFile("test");
     return 0;
 }

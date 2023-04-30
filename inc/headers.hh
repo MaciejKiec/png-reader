@@ -2,6 +2,7 @@
 #define HEADERS_HH
 #include <vector>
 
+inline constexpr uint64_t PNGHEADER  = 0x89504e470d0a1a0a;
 inline constexpr uint32_t IHDRHeader = 0x49484452;
 inline constexpr uint32_t IDATHeader = 0x49444154;
 inline constexpr uint32_t IENDHeader = 0x49454e44;

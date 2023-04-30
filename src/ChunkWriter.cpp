@@ -17,5 +17,21 @@ std::vector<Chunk*> ChunkWriter::getCriticalChunks(){
 
 bool ChunkWriter::writeCriticalChunksToFile(const std::string filename){
     std::vector<Chunk*> criticalChunks = this->getCriticalChunks();
+    std::ofstream outputPNGFile(filename+".png", std::ios::binary | std::ios::out);
+
+    if(!outputPNGFile){
+        std::cerr << "Failed to create/open file " << filename << ".png!\n";
+        return false;
+    }
+
+    outputPNGFile.write((char*) PNGHEADER, sizeof(PNGHEADER));
+    for(int i = 0; i < criticalChunks.size(); i++){
+        outputPNGFile.write((char*) &criticalChunks[i]->dataLength, sizeof(criticalChunks[i]->dataLength));
+        outputPNGFile.write((char*) &criticalChunks[i]->type, sizeof(criticalChunks[i]->type));
+        outputPNGFile.write((char*) &criticalChunks[i]->data, sizeof(criticalChunks[i]->data));
+        outputPNGFile.write((char*) &criticalChunks[i]->crc32, sizeof(criticalChunks[i]->crc32));
+    }
+
+    outputPNGFile.close();
     return true;
 }

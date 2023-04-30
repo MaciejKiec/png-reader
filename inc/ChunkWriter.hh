@@ -1,5 +1,6 @@
 #ifndef CHUNK_WRITER_HH
 #define CHUNK_WRITER_HH
+#include <fstream>
 #include "Chunks/Chunk.hh"
 #include "headers.hh"
 
