@@ -7,11 +7,17 @@
 
 class ChunkWriter{
     private:
-    std::vector<Chunk*> chunks;
-    //void writeSingleChunk(Chunk* chunk);
-    std::vector<Chunk*> getCriticalChunks();
+    std::ofstream outputPNGFile;
+    std::vector<Chunk*> criticalChunks;
+    const std::string fileName;
+
+    void getCriticalChunks(std::vector<Chunk*> chunks);
+    void openPNGFile();
+    void writePNGHeader();
+    void writeCriticalChunks();
+    void closePNGFile();
     public:
-    ChunkWriter(const std::vector<Chunk*> chunks);
-    bool writeCriticalChunksToFile(const std::string fileName);
+    ChunkWriter(const std::vector<Chunk*> chunks, const std::string fileName);
+    bool writeCriticalChunksToFile();
 };
 #endif 

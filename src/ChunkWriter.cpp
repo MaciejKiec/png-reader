@@ -1,30 +1,35 @@
 #include "ChunkWriter.hh"
-ChunkWriter::ChunkWriter(const std::vector<Chunk*> _chunks):
-chunks(_chunks) {};
 
-std::vector<Chunk*> ChunkWriter::getCriticalChunks(){
-    std::vector<Chunk*> criticalChunks;
-    for(int i = 0; i < this->chunks.size(); i++){
+
+void ChunkWriter::getCriticalChunks(std::vector<Chunk*> chunks){
+    for(int i = 0; i < chunks.size(); i++){
         for(int j = 0; j < 4; j++){
-            if(this->chunks[i]->type == criticalChunksHeaders[j]){
+            if(chunks[i]->type == criticalChunksHeaders[j]){
                 criticalChunks.push_back(chunks[i]);
                 break;
             }
         }
     }
-    return criticalChunks;
 }
 
-bool ChunkWriter::writeCriticalChunksToFile(const std::string filename){
-    std::vector<Chunk*> criticalChunks = this->getCriticalChunks();
-    std::ofstream outputPNGFile(filename+".png", std::ios::binary | std::ios::out);
+ChunkWriter::ChunkWriter(const std::vector<Chunk*> _chunks, const std::string _fileName):fileName(_fileName){
+    this->getCriticalChunks(_chunks);
+};
 
-    if(!outputPNGFile){
-        std::cerr << "Failed to create/open file " << filename << ".png!\n";
-        return false;
+
+void ChunkWriter::openPNGFile(){
+        this->outputPNGFile.open(fileName+".png", std::ios::binary | std::ios::out);
+        if(!outputPNGFile){
+        std::cerr << "Failed to create/open file " << fileName << ".png!\n";
+        exit(0);
     }
+}
 
-    outputPNGFile.write((char*) &PNGHEADER, sizeof(PNGHEADER));
+void ChunkWriter::writePNGHeader(){
+    this->outputPNGFile.write((char*) &PNGHEADER, sizeof(PNGHEADER));
+}
+
+void ChunkWriter::writeCriticalChunks(){
     for(int i = 0; i < criticalChunks.size(); i++){
         //reverse bit order
         uint32_t dataLength = swapEndians(criticalChunks[i]->dataLength);
@@ -39,6 +44,15 @@ bool ChunkWriter::writeCriticalChunksToFile(const std::string filename){
         }
         outputPNGFile.write((char*) &crc32, sizeof(crc32));
     }
+}
+
+void ChunkWriter::closePNGFile(){
     outputPNGFile.close();
+}
+bool ChunkWriter::writeCriticalChunksToFile(){
+    openPNGFile();
+    writePNGHeader();
+    writeCriticalChunks();
+    closePNGFile();
     return true;
 }
