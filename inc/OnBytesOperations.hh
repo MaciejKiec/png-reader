@@ -10,5 +10,7 @@
 std::vector<unsigned int> loadBytesFromFile(const std::string filename);
 void printHexFromLoadedBytes(const std::vector<unsigned int> bytes);
 bool checkIfFileIsPNG(const std::vector<unsigned int> bytes);
+uint32_t reverse(uint32_t hex);
+int swapEndians(int value);
 
 #endif

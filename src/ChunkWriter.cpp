@@ -24,14 +24,21 @@ bool ChunkWriter::writeCriticalChunksToFile(const std::string filename){
         return false;
     }
 
-    outputPNGFile.write((char*) PNGHEADER, sizeof(PNGHEADER));
+    outputPNGFile.write((char*) &PNGHEADER, sizeof(PNGHEADER));
     for(int i = 0; i < criticalChunks.size(); i++){
-        outputPNGFile.write((char*) &criticalChunks[i]->dataLength, sizeof(criticalChunks[i]->dataLength));
-        outputPNGFile.write((char*) &criticalChunks[i]->type, sizeof(criticalChunks[i]->type));
-        outputPNGFile.write((char*) &criticalChunks[i]->data, sizeof(criticalChunks[i]->data));
-        outputPNGFile.write((char*) &criticalChunks[i]->crc32, sizeof(criticalChunks[i]->crc32));
-    }
+        //reverse bit order
+        uint32_t dataLength = swapEndians(criticalChunks[i]->dataLength);
+        uint32_t type = swapEndians(criticalChunks[i]->type);
+        uint32_t crc32 = swapEndians(criticalChunks[i]->crc32);
 
+        outputPNGFile.write((char*) &dataLength, sizeof(dataLength));
+        outputPNGFile.write((char*) &type, sizeof(type));
+        for(int j = 0; j < criticalChunks[i]->data.size(); j++){
+            uint8_t singleByte = criticalChunks[i]->data[j];
+            outputPNGFile.write((char*) &singleByte, sizeof(uint8_t));
+        }
+        outputPNGFile.write((char*) &crc32, sizeof(crc32));
+    }
     outputPNGFile.close();
     return true;
 }

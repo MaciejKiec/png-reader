@@ -3,6 +3,7 @@
 #include <fstream>
 #include "Chunks/Chunk.hh"
 #include "headers.hh"
+#include "OnBytesOperations.hh"
 
 class ChunkWriter{
     private:
