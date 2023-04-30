@@ -1,7 +1,5 @@
-#include <iostream>
-#include <vector>
 #include "ChunkReader.hh"
-
+#include "ChunkWriter.hh"
 
 int main(){
 

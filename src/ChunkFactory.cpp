@@ -1,5 +1,4 @@
 #include "ChunkFactory.hh"
-#include "headers.hh"
 
 IHDRChunk* ChunkFactory::generateIHDRChunk(uint32_t dataLength, uint32_t type, std::vector<unsigned int> data, uint32_t crc32){
     return new IHDRChunk(dataLength, type, data, crc32);

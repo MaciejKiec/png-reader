@@ -6,6 +6,7 @@
 #include <vector>
 #include <iomanip>
 #include <string>
+#include "headers.hh"
 #include "Chunks/Chunk.hh"
 #include "Chunks/CriticalChunks/IDATChunk.hh"
 #include "Chunks/CriticalChunks/IHDRChunk.hh"
