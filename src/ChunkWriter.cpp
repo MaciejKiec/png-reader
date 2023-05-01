@@ -49,6 +49,7 @@ void ChunkWriter::writeCriticalChunks(){
 void ChunkWriter::closePNGFile(){
     outputPNGFile.close();
 }
+
 bool ChunkWriter::writeCriticalChunksToFile(){
     openPNGFile();
     writePNGHeader();
