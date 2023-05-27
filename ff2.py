@@ -3,7 +3,7 @@ import numpy as np
 from matplotlib import pyplot as plt
 
 #load image
-img = cv2.imread('images/lena.png')
+img = cv2.imread('images/ezoteriusz.png')
 
 #load image into graystyle and rgb channels
 gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
@@ -37,6 +37,8 @@ magnitudeSpectrumGray, phaseSpectrumGray = 20*np.log(cv2.cartToPolar(dftShiftGra
 magnitudeSpectrumRedChannel, phaseSpectrumRedChannel = 20*np.log(cv2.cartToPolar(dftShiftRedChannel[:,:,0],dftShiftRedChannel[:,:,1]))
 magnitudeSpectrumGreenChannel, phaseSpectrumGreenChannel = 20*np.log(cv2.cartToPolar(dftShiftGreenChannel[:,:,0],dftShiftGreenChannel[:,:,1]))
 magnitudeSpectrumBlueChannel, phaseSpectrumBlueChannel = 20*np.log(cv2.cartToPolar(dftShiftBlueChannel[:,:,0],dftShiftBlueChannel[:,:,1]))
+
+print(magnitudeSpectrumGray.ndim)
 
 #display magnitude and phase
 plt.figure("Gray image")

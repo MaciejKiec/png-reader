@@ -3,9 +3,9 @@
 
 int main(){
 
-    std::vector<unsigned int> bytes = loadBytesFromFile("images\\1.png");
-    ChunkReader* chunkReader = new ChunkReader();
-    std::vector<Chunk*> chunks = chunkReader->readSomeChunks(bytes);
+    std::vector<unsigned int> bytes = loadBytesFromFile("images\\3.png");
+    ChunkReader* chunkReader = new ChunkReader(bytes);
+    std::vector<Chunk*> chunks = chunkReader->readSomeChunks();
     /*for(int i = 0; i < chunks.size(); i++){
        chunks[i]->whatChunkAmI();
     }*/

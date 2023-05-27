@@ -9,7 +9,24 @@
 #include "ChunkFactory.hh"
 #include "OnBytesOperations.hh"
 class ChunkReader{
+    private:
+        std::vector<unsigned int> bytesToRead;
+        uint32_t dataLength = 0;
+        uint32_t type = 0;
+        std::vector<unsigned int> data = {};
+        uint32_t crc32 = 0;
+    
+        bool zeroLengthDetected = false;
+        int pointer = 8;
+
+        void readDataLength();
+        void readChunkType();
+        void readChunkData();
+        void readCRC32();
+        void checkHeader();
+        void clearVariables();
     public:
-    const std::vector<Chunk*> readSomeChunks(const std::vector<unsigned int> bytesToRead);
+        ChunkReader(const std::vector<unsigned int>& bytesToRead);
+        const std::vector<Chunk*> readSomeChunks();
 };
 #endif
