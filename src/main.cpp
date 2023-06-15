@@ -1,16 +1,21 @@
 #include "ChunkReader.hh"
 #include "ChunkWriter.hh"
+#include "RSA/keysGenerator.hh"
+#include "RSA/fileEncryptorDecryptor.hh"
 
 int main(){
 
-    std::vector<unsigned int> bytes = loadBytesFromFile("images\\3.png");
-    ChunkReader* chunkReader = new ChunkReader(bytes);
-    std::vector<Chunk*> chunks = chunkReader->readSomeChunks();
-    /*for(int i = 0; i < chunks.size(); i++){
-       chunks[i]->whatChunkAmI();
-    }*/
+    generateRSAKeyPair("keys/public.txt", "keys/private.txt", 2048);
+    const std::string publicKeyPath = "keys/public.txt";
+    const std::string privateKeyPath = "keys/private.txt";
+    
+    std::string data = "Pewne dane";
+    
+    std::string encrypted = encryptRSA(data, publicKeyPath);
+    std::cout << std::endl<< encrypted << std::endl;
 
-    ChunkWriter* chunkWriter = new ChunkWriter(chunks,"test");
-    chunkWriter->writeCriticalChunksToFile();
+    std::string decrypted = decryptRSA(encrypted, privateKeyPath);
+
+    std::cout << std::endl << decrypted << std::endl;
     return 0;
 }

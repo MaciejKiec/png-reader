@@ -3,7 +3,7 @@ import numpy as np
 from matplotlib import pyplot as plt
 
 #load image
-img = cv2.imread('images/ezoteriusz.png')
+img = cv2.imread('images/lenaRotated.png')
 
 #load image into graystyle and rgb channels
 gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)

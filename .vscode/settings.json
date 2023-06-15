@@ -47,6 +47,7 @@
         "numeric": "cpp",
         "random": "cpp",
         "tuple": "cpp",
-        "utility": "cpp"
+        "utility": "cpp",
+        "cinttypes": "cpp"
     }
 }
