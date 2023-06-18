@@ -5,8 +5,8 @@ PROJECT(PngReader)
 include_directories(inc)
 set(OPENSSL_ROOT_DIR "C:/Program Files/OpenSSL-Win64")
 find_package(OpenSSL REQUIRED)
-file(GLOB SOURCE "src/*.cpp" "src/RSA/*.cpp" "src/Chunks/*.cpp" "src/Chunks/AncillaryChunks/*.cpp" "src/Chunks/CriticalChunks/*.cpp"
-"inc/*.hh" "inc/RSA/*.hh" "inc/Chunks/*.hh" "inc/Chunks/AncillaryChunks/*.hh" "inc/Chunks/CriticalChunks/*.hh")
+file(GLOB SOURCE "src/*.cpp" "src/EncryptionDecryption/*.cpp" "src/EncryptionDecryption/RSA/*.cpp" "src/Chunks/*.cpp" "src/Chunks/AncillaryChunks/*.cpp" "src/Chunks/CriticalChunks/*.cpp"
+"inc/*.hh" "inc/RSA/*.hh" "inc/EncryptionDecryption/*.hh" "inc/EncryptionDecryption/RSA/*.hh" "src/Chunks/*.cpp" "src/Chunks/AncillaryChunks/*.cpp" "inc/Chunks/*.hh" "inc/Chunks/AncillaryChunks/*.hh" "inc/Chunks/CriticalChunks/*.hh")
 add_executable(${PROJECT_NAME} ${SOURCE} applink.o)
 target_include_directories(PngReader PUBLIC ${OPENSSL_INCLUDE_DIR})
 target_link_libraries(PngReader PUBLIC OpenSSL::SSL OpenSSL::Crypto)
