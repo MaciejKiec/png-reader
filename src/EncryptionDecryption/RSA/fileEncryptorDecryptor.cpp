@@ -1,8 +1,8 @@
 #include "EncryptionDecryption/RSA/fileEncryptorDecryptor.hh"
 #include <iostream>
 // Function to encrypt data using RSA
-void RsaAlgorithm::encrypt(std::vector<Chunk*>& data, const std::string& publicKeyPath){
-    std::string temp = "asfasdas";
+void RsaAlgorithm::encrypt(std::vector<unsigned int>& data, const std::string& publicKeyPath){
+    std::string temp = ChunkDataToString(data);
     FILE* publicKeyFile = fopen(publicKeyPath.c_str(), "r");
     if (!publicKeyFile) {
         std::cerr << "Error opening public key file: " << publicKeyPath << std::endl;
