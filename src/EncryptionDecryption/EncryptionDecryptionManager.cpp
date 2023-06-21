@@ -4,6 +4,7 @@ void PngEncryptionDecryption::CombineIDATChunks(){
     std::vector<Chunk*> IDATChunks;
     ChunkFactory* chunkFactory = new ChunkFactory();
     std::vector<unsigned int> combinedData;
+    std::ofstream BufferFile;
 
     for(int i = 0; i < chunks.size(); i++){
         if(chunks[i]->type == IDATHeader){
@@ -23,17 +24,32 @@ void PngEncryptionDecryption::CombineIDATChunks(){
 
     chunks.insert(chunks.end()-1, combinedIDATChunks);
 
+    BufferFile.open("buffer/IDATBytes", std::ios::binary | std::ios::out);
+    for(int j = 0; j < combinedData.size(); j++){
+        uint8_t singleByte = combinedData[j];
+        BufferFile.write((char*) &singleByte, sizeof(uint8_t));
+    }
+    BufferFile.close();
+    system("python .\\EncryptionDecryptionPython.py");
 }
 
 
 
 
-void PngEncryptionDecryption::encrypt(){
-    interface->encrypt(this->chunks, this->PublicKeyPath);
+void PngEncryptionDecryption::encryptDecompressed(){
+    interface->encryptDecompressed(this->chunks, this->PublicKeyPath);
 }
 
-void PngEncryptionDecryption::decrypt(){
-    interface->decrypt(this->chunks, this->PrivateKeyPath);
+void PngEncryptionDecryption::decryptDecompressed(){
+    interface->decryptDecompressed(this->chunks, this->PrivateKeyPath);
+}
+
+void PngEncryptionDecryption::encryptCompressed(){
+    interface->encryptCompressed(this->chunks, this->PublicKeyPath);
+}
+
+void PngEncryptionDecryption::decryptCompressed(){
+    interface->decryptCompressed(this->chunks, this->PrivateKeyPath);
 }
 
 std::vector<Chunk*> PngEncryptionDecryption::getChunks(){

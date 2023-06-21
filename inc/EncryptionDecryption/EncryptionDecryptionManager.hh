@@ -7,6 +7,8 @@
 #include <memory>
 #include <zlib.h>
 #include <algorithm>
+#include <fstream>
+
 
 class PngEncryptionDecryption{
     private:
@@ -18,8 +20,10 @@ class PngEncryptionDecryption{
     public:
         PngEncryptionDecryption(std::shared_ptr<FileEncryptionDecryptionInterface> _interface, const std::vector<Chunk*>& _chunks, const std::string& _PublicKeyPath, const std::string& _PrivateKeyPath):
         interface(_interface), chunks(_chunks), PublicKeyPath(_PublicKeyPath), PrivateKeyPath(_PrivateKeyPath){};
-        void encrypt();
-        void decrypt();
+        void encryptCompressed();
+        void decryptCompressed();
+        void encryptDecompressed();
+        void decryptDecompressed();
         void CombineIDATChunks();
         std::vector<Chunk*> getChunks();
 };

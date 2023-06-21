@@ -4,7 +4,7 @@ std::vector<unsigned int> loadBytesFromFile(const std::string filename){
     std::ifstream input;
     input.open(filename, std::ios::binary);
     if(!input){
-        std::cerr << "Failed to load the file!\n";
+        std::cerr << "Failed to load the file! File name: " << filename << "\n";
         exit(0);
     }
 
