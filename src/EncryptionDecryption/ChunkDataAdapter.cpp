@@ -1,21 +1,16 @@
 #include "EncryptionDecryption/ChunkDataAdapter.hh"
 
 
-std::string ChunkDataToString(const std::vector<unsigned int>& chunkData){
-    std::string toReturn = "";
-    for(const unsigned int& byte: chunkData){
-        toReturn.append(std::to_string(byte));
+void ChunkDataToChars(const std::vector<unsigned int>& chunkData, unsigned char* table){
+    for(int i = 0; i < chunkData.size(); i++){
+        table[i] = static_cast<unsigned char>(chunkData[i]);
     }
-
-    return toReturn;
 }
 
-std::vector<unsigned int> StringToChunkData(const std::string& chunkData){
-    std::vector<unsigned int> toReturn = {};
-
-    for(const char& byte: chunkData){
-        toReturn.push_back(int(byte));
+std::vector<unsigned int> CharsToChunkData(const unsigned char* chunkData, const int& size){
+    std::vector<unsigned int> toReturn(size);
+    for(int i = 0; i < size; i++){
+        toReturn[i] = static_cast<unsigned int>(chunkData[i]);
     }
-
     return toReturn;
 }

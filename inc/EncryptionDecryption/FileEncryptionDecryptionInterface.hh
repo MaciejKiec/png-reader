@@ -9,7 +9,7 @@ class FileEncryptionDecryptionInterface{
         FileEncryptionDecryptionInterface(){};
         ~FileEncryptionDecryptionInterface(){};
 
-        virtual void encrypt(std::vector<unsigned int >& data, const std::string& publicKeyPath) = 0;
+        virtual void encrypt(std::vector<Chunk*>& data, const std::string& publicKeyPath) = 0;
         virtual void decrypt(std::vector<Chunk*>& encryptedData, const std::string& privateKeyPath) = 0; 
 };
 
